@@ -318,7 +318,7 @@ export function generateInvoicePdf(args: {
   doc.text("Tax Amount (in words):", M + 6, y + 12);
   doc.setFont("helvetica", "bold");
   doc.setFontSize(9);
-  doc.text(numberToWordsForTax(totalTax), M + 110, y + 12);
+  doc.text(numberToWordsIndian(totalTax), M + 110, y + 12);
   doc.setFont("helvetica", "normal");
   y += taxWordsH;
 
