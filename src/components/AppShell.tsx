@@ -3,6 +3,7 @@ import type { ReactNode } from "react";
 import { useAuth } from "@/lib/auth";
 import { LayoutDashboard, Building2, Users, FileText, FilePlus, LogOut } from "lucide-react";
 import { cn } from "@/lib/utils";
+import sigmaMark from "@/assets/apoyphe-sigma.png";
 
 const nav = [
   { to: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
