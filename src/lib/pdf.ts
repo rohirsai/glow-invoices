@@ -1,9 +1,32 @@
 import jsPDF from "jspdf";
 import type { Invoice, Company, Customer } from "./api";
 import { numberToWordsIndian } from "./gst";
+import apoypheLogoUrl from "@/assets/apoyphe-logo.png";
+
+async function loadImageDataUrl(url: string): Promise<{ dataUrl: string; w: number; h: number } | null> {
+  try {
+    const res = await fetch(url);
+    const blob = await res.blob();
+    const dataUrl: string = await new Promise((resolve, reject) => {
+      const r = new FileReader();
+      r.onload = () => resolve(r.result as string);
+      r.onerror = reject;
+      r.readAsDataURL(blob);
+    });
+    const dims: { w: number; h: number } = await new Promise((resolve) => {
+      const img = new Image();
+      img.onload = () => resolve({ w: img.naturalWidth, h: img.naturalHeight });
+      img.onerror = () => resolve({ w: 0, h: 0 });
+      img.src = dataUrl;
+    });
+    return { dataUrl, w: dims.w, h: dims.h };
+  } catch {
+    return null;
+  }
+}
 
 // Indian-style Tally tax invoice layout matching the reference format.
-export function generateInvoicePdf(args: {
+export async function generateInvoicePdf(args: {
   invoice: Invoice;
   company: Company | null;
   customer: Customer | null;
@@ -16,6 +39,8 @@ export function generateInvoicePdf(args: {
   const M = 24;
   const innerW = pageW - M * 2;
   const right = pageW - M;
+
+  const logo = await loadImageDataUrl(apoypheLogoUrl);
 
   const fmt = (n: number) =>
     n.toLocaleString("en-IN", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
