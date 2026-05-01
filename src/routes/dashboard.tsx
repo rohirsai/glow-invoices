@@ -56,9 +56,15 @@ function Dashboard() {
         title="Dashboard"
         subtitle="Overview of your billing activity"
         actions={
-          <Link to="/invoices/new">
-            <Button>New Invoice</Button>
-          </Link>
+          <div className="flex gap-2">
+            <Button variant="outline" onClick={seedSample} disabled={loadingSample}>
+              <Sparkles className="h-4 w-4 mr-1" />
+              {loadingSample ? "Loading..." : "Load Sample Data"}
+            </Button>
+            <Link to="/invoices/new">
+              <Button>New Invoice</Button>
+            </Link>
+          </div>
         }
       />
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
