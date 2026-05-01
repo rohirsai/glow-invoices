@@ -5,7 +5,9 @@ import { PageHeader } from "@/components/AppShell";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { endpoints, type Invoice } from "@/lib/api";
-import { FileText, CheckCircle2, Clock, IndianRupee } from "lucide-react";
+import { loadSampleData } from "@/lib/sampleData";
+import { FileText, CheckCircle2, Clock, IndianRupee, Sparkles } from "lucide-react";
+import { toast } from "sonner";
 
 export const Route = createFileRoute("/dashboard")({
   component: () => (
