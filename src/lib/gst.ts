@@ -1,10 +1,13 @@
 export function calcGst(subtotal: number, gstPercent: number, gstType: "CGST_SGST" | "IGST") {
   const tax = +(subtotal * (gstPercent / 100)).toFixed(2);
+  const rawTotal = +(subtotal + tax).toFixed(2);
+  const rounded = Math.round(rawTotal);
+  const roundOff = +(rounded - rawTotal).toFixed(2);
   if (gstType === "IGST") {
-    return { cgst: 0, sgst: 0, igst: tax, total: +(subtotal + tax).toFixed(2) };
+    return { cgst: 0, sgst: 0, igst: tax, roundOff, total: rounded };
   }
   const half = +(tax / 2).toFixed(2);
-  return { cgst: half, sgst: half, igst: 0, total: +(subtotal + tax).toFixed(2) };
+  return { cgst: half, sgst: half, igst: 0, roundOff, total: rounded };
 }
 
 const ones = [
