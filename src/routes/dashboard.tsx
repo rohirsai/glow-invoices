@@ -5,7 +5,9 @@ import { PageHeader } from "@/components/AppShell";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { endpoints, type Invoice } from "@/lib/api";
-import { FileText, CheckCircle2, Clock, IndianRupee } from "lucide-react";
+import { loadSampleData } from "@/lib/sampleData";
+import { FileText, CheckCircle2, Clock, IndianRupee, Sparkles } from "lucide-react";
+import { toast } from "sonner";
 
 export const Route = createFileRoute("/dashboard")({
   component: () => (
@@ -17,9 +19,24 @@ export const Route = createFileRoute("/dashboard")({
 
 function Dashboard() {
   const [invoices, setInvoices] = useState<Invoice[]>([]);
+  const [loadingSample, setLoadingSample] = useState(false);
+  const refresh = () => endpoints.listInvoices().then(setInvoices).catch(() => setInvoices([]));
   useEffect(() => {
-    endpoints.listInvoices().then(setInvoices).catch(() => setInvoices([]));
+    refresh();
   }, []);
+
+  const seedSample = async () => {
+    setLoadingSample(true);
+    try {
+      await loadSampleData();
+      toast.success("Sample invoice loaded (APOY/56/25-26)");
+      await refresh();
+    } catch {
+      toast.error("Failed to load sample data");
+    } finally {
+      setLoadingSample(false);
+    }
+  };
 
   const total = invoices.length;
   const paid = invoices.filter((i) => i.status === "PAID").length;
@@ -39,9 +56,15 @@ function Dashboard() {
         title="Dashboard"
         subtitle="Overview of your billing activity"
         actions={
-          <Link to="/invoices/new">
-            <Button>New Invoice</Button>
-          </Link>
+          <div className="flex gap-2">
+            <Button variant="outline" onClick={seedSample} disabled={loadingSample}>
+              <Sparkles className="h-4 w-4 mr-1" />
+              {loadingSample ? "Loading..." : "Load Sample Data"}
+            </Button>
+            <Link to="/invoices/new">
+              <Button>New Invoice</Button>
+            </Link>
+          </div>
         }
       />
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
