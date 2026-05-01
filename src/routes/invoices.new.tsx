@@ -28,9 +28,15 @@ function NewInvoicePage() {
   const [customerId, setCustomerId] = useState("");
   const [invoiceNumber, setInvoiceNumber] = useState(`INV-${Date.now().toString().slice(-6)}`);
   const [date, setDate] = useState(new Date().toISOString().slice(0, 10));
-  const [items, setItems] = useState<InvoiceItem[]>([{ description: "", amount: 0 }]);
+  const [items, setItems] = useState<InvoiceItem[]>([
+    { description: "", hsnSac: "998315", qty: 1, rate: 0, amount: 0 },
+  ]);
   const [gstType, setGstType] = useState<"CGST_SGST" | "IGST">("CGST_SGST");
   const [gstPercent, setGstPercent] = useState(18);
+  const [referenceNo, setReferenceNo] = useState("");
+  const [paymentTerms, setPaymentTerms] = useState("");
+  const [buyerOrderNo, setBuyerOrderNo] = useState("");
+  const [otherReferences, setOtherReferences] = useState("");
 
   useEffect(() => {
     endpoints.listCustomers().then(setCustomers).catch(() => setCustomers([]));
