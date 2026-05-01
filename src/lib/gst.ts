@@ -33,7 +33,7 @@ export function numberToWordsIndian(num: number): string {
   if (!isFinite(num)) return "";
   const rupees = Math.floor(num);
   const paise = Math.round((num - rupees) * 100);
-  if (rupees === 0 && paise === 0) return "Zero Rupees Only";
+  if (rupees === 0 && paise === 0) return "INR Zero Rupee Only.";
 
   const parts: string[] = [];
   let n = rupees;
@@ -47,7 +47,7 @@ export function numberToWordsIndian(num: number): string {
   if (thousand) parts.push(twoDigits(thousand) + " Thousand");
   if (hundred) parts.push(threeDigits(hundred));
 
-  let result = parts.join(" ").trim() + " Rupees";
-  if (paise > 0) result += " and " + twoDigits(paise) + " Paise";
-  return result + " Only";
+  let result = "INR " + parts.join(" ").trim() + " Rupee";
+  if (paise > 0) result += " And " + twoDigits(paise) + " Paisa";
+  return result + " Only.";
 }
