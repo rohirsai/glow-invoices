@@ -39,6 +39,10 @@ export const Route = createRootRoute({
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
       { name: "twitter:site", content: "@Lovable" },
+      { name: "twitter:title", content: "Apoyphe Billing — Invoice Manager" },
+      { name: "twitter:description", content: "Create GST invoices, manage customers, export PDFs." },
+      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/6b5a0986-2db4-48da-b57b-74435c72e197/id-preview-ff790c52--f354884e-a1f0-4180-b482-8a0706cd483b.lovable.app-1777621396019.png" },
+      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/6b5a0986-2db4-48da-b57b-74435c72e197/id-preview-ff790c52--f354884e-a1f0-4180-b482-8a0706cd483b.lovable.app-1777621396019.png" },
     ],
     links: [
       {
