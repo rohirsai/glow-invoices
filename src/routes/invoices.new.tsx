@@ -51,7 +51,19 @@ function NewInvoicePage() {
   const words = useMemo(() => numberToWordsIndian(breakdown.total), [breakdown.total]);
 
   const updateItem = (idx: number, patch: Partial<InvoiceItem>) => {
-    setItems((arr) => arr.map((it, i) => (i === idx ? { ...it, ...patch } : it)));
+    setItems((arr) =>
+      arr.map((it, i) => {
+        if (i !== idx) return it;
+        const next = { ...it, ...patch };
+        // Auto-calc amount when qty or rate provided
+        if (patch.qty != null || patch.rate != null) {
+          const q = Number(next.qty) || 0;
+          const r = Number(next.rate) || 0;
+          if (q && r) next.amount = +(q * r).toFixed(2);
+        }
+        return next;
+      }),
+    );
   };
 
   const save = async () => {
