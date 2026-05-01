@@ -47,6 +47,11 @@ function CustomersPage() {
               <div><Label>Name</Label><Input value={form.name || ""} onChange={(e) => setForm({ ...form, name: e.target.value })} /></div>
               <div><Label>GSTIN</Label><Input value={form.gstin || ""} onChange={(e) => setForm({ ...form, gstin: e.target.value })} /></div>
               <div><Label>Address</Label><Textarea rows={3} value={form.address || ""} onChange={(e) => setForm({ ...form, address: e.target.value })} /></div>
+              <div className="grid grid-cols-2 gap-2">
+                <div><Label>State Name</Label><Input value={form.stateName || ""} onChange={(e) => setForm({ ...form, stateName: e.target.value })} /></div>
+                <div><Label>State Code</Label><Input value={form.stateCode || ""} onChange={(e) => setForm({ ...form, stateCode: e.target.value })} /></div>
+              </div>
+              <div><Label>Place of Supply</Label><Input value={form.placeOfSupply || ""} onChange={(e) => setForm({ ...form, placeOfSupply: e.target.value })} /></div>
               <div className="flex gap-2">
                 <Button type="submit">Save</Button>
                 {form.customerId && <Button type="button" variant="outline" onClick={() => setForm(empty)}>Cancel</Button>}
