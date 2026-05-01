@@ -84,18 +84,25 @@ export async function generateInvoicePdf(args: {
   y += headerH;
 
   // ---------- Issuer details + Invoice meta grid ----------
-  const metaH = 70;
+  const metaH = 96;
   doc.rect(M, y, innerW, metaH);
   doc.line(headerSplit, y, headerSplit, y + metaH);
 
+  // Issuer (company) block on the left
+  doc.setFont("helvetica", "bold");
+  doc.setFontSize(11);
+  doc.text(company?.name || "—", M + 10, y + 16);
   doc.setFont("helvetica", "normal");
   doc.setFontSize(9);
+  const compAddr = doc.splitTextToSize(company?.address || "", headerSplit - M - 20);
+  doc.text(compAddr, M + 10, y + 30);
+  let issuerY = y + 30 + compAddr.length * 11;
   const issuerLines = [
     company?.gstin ? `GSTIN: ${company.gstin}` : "",
     company?.stateName ? `State Name: ${company.stateName}` : "",
     company?.email || "",
   ].filter(Boolean);
-  issuerLines.forEach((l, i) => doc.text(l, M + 10, y + 16 + i * 12));
+  issuerLines.forEach((l, i) => doc.text(l, M + 10, issuerY + i * 11));
 
   // Right side: 2x2 meta grid (Invoice No / Dated, Reference / Mode, Buyer Order / Other Ref)
   const rX = headerSplit;
