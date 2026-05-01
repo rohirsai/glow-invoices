@@ -41,7 +41,7 @@ function LoginPage() {
       <Card className="w-full max-w-md">
         <CardHeader>
           <CardTitle>Sign in</CardTitle>
-          <CardDescription>Access the GST Billing dashboard</CardDescription>
+          <CardDescription>Access the Apoyphe Billing dashboard</CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={onSubmit} className="space-y-4">

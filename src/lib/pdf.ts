@@ -1,9 +1,32 @@
 import jsPDF from "jspdf";
 import type { Invoice, Company, Customer } from "./api";
 import { numberToWordsIndian } from "./gst";
+import apoypheLogoUrl from "@/assets/apoyphe-logo.png";
+
+async function loadImageDataUrl(url: string): Promise<{ dataUrl: string; w: number; h: number } | null> {
+  try {
+    const res = await fetch(url);
+    const blob = await res.blob();
+    const dataUrl: string = await new Promise((resolve, reject) => {
+      const r = new FileReader();
+      r.onload = () => resolve(r.result as string);
+      r.onerror = reject;
+      r.readAsDataURL(blob);
+    });
+    const dims: { w: number; h: number } = await new Promise((resolve) => {
+      const img = new Image();
+      img.onload = () => resolve({ w: img.naturalWidth, h: img.naturalHeight });
+      img.onerror = () => resolve({ w: 0, h: 0 });
+      img.src = dataUrl;
+    });
+    return { dataUrl, w: dims.w, h: dims.h };
+  } catch {
+    return null;
+  }
+}
 
 // Indian-style Tally tax invoice layout matching the reference format.
-export function generateInvoicePdf(args: {
+export async function generateInvoicePdf(args: {
   invoice: Invoice;
   company: Company | null;
   customer: Customer | null;
@@ -17,6 +40,8 @@ export function generateInvoicePdf(args: {
   const innerW = pageW - M * 2;
   const right = pageW - M;
 
+  const logo = await loadImageDataUrl(apoypheLogoUrl);
+
   const fmt = (n: number) =>
     n.toLocaleString("en-IN", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
@@ -28,40 +53,56 @@ export function generateInvoicePdf(args: {
   let y = M;
   const startY = y;
 
-  // ---------- Header band: Logo/Company name | TAX INVOICE ----------
-  const headerH = 60;
+  // ---------- Header band: Logo | TAX INVOICE ----------
+  const headerH = 80;
   const headerSplit = M + innerW * 0.55;
   doc.rect(M, y, innerW, headerH);
   doc.line(headerSplit, y, headerSplit, y + headerH);
 
-  doc.setFont("helvetica", "bold");
-  doc.setFontSize(16);
-  doc.text(company?.name || "—", M + 10, y + 24);
-  doc.setFont("helvetica", "normal");
-  doc.setFontSize(9);
-  const compAddr = doc.splitTextToSize(company?.address || "", headerSplit - M - 20);
-  doc.text(compAddr, M + 10, y + 38);
+  // Logo (preserve aspect ratio, fit in left header cell)
+  if (logo && logo.w && logo.h) {
+    const maxW = headerSplit - M - 20;
+    const maxH = headerH - 16;
+    const scale = Math.min(maxW / logo.w, maxH / logo.h);
+    const w = logo.w * scale;
+    const h = logo.h * scale;
+    const lx = M + (headerSplit - M - w) / 2;
+    const ly = y + (headerH - h) / 2;
+    doc.addImage(logo.dataUrl, "PNG", lx, ly, w, h, undefined, "FAST");
+  } else {
+    // Fallback: company name as text
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(18);
+    doc.text(company?.name || "APOYPHE", M + 14, y + headerH / 2 + 6);
+  }
 
   doc.setFont("helvetica", "bold");
-  doc.setFontSize(18);
-  doc.text("TAX INVOICE", headerSplit + (pageW - headerSplit - M) / 2, y + 36, {
+  doc.setFontSize(20);
+  doc.text("TAX INVOICE", headerSplit + (pageW - headerSplit - M) / 2, y + headerH / 2 + 6, {
     align: "center",
   });
   y += headerH;
 
   // ---------- Issuer details + Invoice meta grid ----------
-  const metaH = 70;
+  const metaH = 96;
   doc.rect(M, y, innerW, metaH);
   doc.line(headerSplit, y, headerSplit, y + metaH);
 
+  // Issuer (company) block on the left
+  doc.setFont("helvetica", "bold");
+  doc.setFontSize(11);
+  doc.text(company?.name || "—", M + 10, y + 16);
   doc.setFont("helvetica", "normal");
   doc.setFontSize(9);
+  const compAddr = doc.splitTextToSize(company?.address || "", headerSplit - M - 20);
+  doc.text(compAddr, M + 10, y + 30);
+  let issuerY = y + 30 + compAddr.length * 11;
   const issuerLines = [
     company?.gstin ? `GSTIN: ${company.gstin}` : "",
     company?.stateName ? `State Name: ${company.stateName}` : "",
     company?.email || "",
   ].filter(Boolean);
-  issuerLines.forEach((l, i) => doc.text(l, M + 10, y + 16 + i * 12));
+  issuerLines.forEach((l, i) => doc.text(l, M + 10, issuerY + i * 11));
 
   // Right side: 2x2 meta grid (Invoice No / Dated, Reference / Mode, Buyer Order / Other Ref)
   const rX = headerSplit;

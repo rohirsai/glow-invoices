@@ -3,6 +3,7 @@ import type { ReactNode } from "react";
 import { useAuth } from "@/lib/auth";
 import { LayoutDashboard, Building2, Users, FileText, FilePlus, LogOut } from "lucide-react";
 import { cn } from "@/lib/utils";
+import sigmaMark from "@/assets/apoyphe-sigma.png";
 
 const nav = [
   { to: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
@@ -25,9 +26,12 @@ export function AppShell({ children }: { children: ReactNode }) {
   return (
     <div className="min-h-screen flex bg-background text-foreground">
       <aside className="w-64 shrink-0 border-r bg-card flex flex-col">
-        <div className="px-5 py-5 border-b">
-          <div className="text-lg font-semibold">GST Billing</div>
-          <div className="text-xs text-muted-foreground">Invoice Manager</div>
+        <div className="px-5 py-5 border-b flex items-center gap-3">
+          <img src={sigmaMark} alt="Apoyphe" className="h-9 w-9 shrink-0" />
+          <div>
+            <div className="text-lg font-semibold leading-tight">Apoyphe Billing</div>
+            <div className="text-xs text-muted-foreground">Invoice Manager</div>
+          </div>
         </div>
         <nav className="flex-1 px-3 py-4 space-y-1">
           {nav.map((item) => {
