@@ -50,8 +50,8 @@ function InvoiceDetail() {
 
   const words = numberToWordsIndian(invoice.total);
 
-  const downloadPdf = () => {
-    generateInvoicePdf({ invoice, company, customer, words });
+  const downloadPdf = async () => {
+    await generateInvoicePdf({ invoice, company, customer, words });
   };
 
   return (
