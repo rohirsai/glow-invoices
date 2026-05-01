@@ -31,10 +31,10 @@ export const Route = createRootRoute({
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "GST Billing — Invoice Manager" },
+      { title: "Apoyphe Billing — Invoice Manager" },
       { name: "description", content: "Create GST invoices, manage customers, export PDFs." },
-      { name: "author", content: "GST Billing" },
-      { property: "og:title", content: "GST Billing — Invoice Manager" },
+      { name: "author", content: "Apoyphe" },
+      { property: "og:title", content: "Apoyphe Billing — Invoice Manager" },
       { property: "og:description", content: "Create GST invoices, manage customers, export PDFs." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
