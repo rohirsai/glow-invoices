@@ -18,7 +18,18 @@ export const Route = createFileRoute("/companies")({
   ),
 });
 
-const empty: Partial<Company> = { name: "", address: "", gstin: "", email: "" };
+const empty: Partial<Company> = {
+  name: "",
+  address: "",
+  gstin: "",
+  email: "",
+  stateName: "",
+  stateCode: "",
+  bankAccountName: "",
+  bankName: "",
+  bankAccountNo: "",
+  bankBranchIfsc: "",
+};
 
 function CompaniesPage() {
   const [list, setList] = useState<Company[]>([]);
@@ -51,6 +62,21 @@ function CompaniesPage() {
               <div><Label>GSTIN</Label><Input value={form.gstin || ""} onChange={(e) => setForm({ ...form, gstin: e.target.value })} /></div>
               <div><Label>Email</Label><Input type="email" value={form.email || ""} onChange={(e) => setForm({ ...form, email: e.target.value })} /></div>
               <div><Label>Address</Label><Textarea rows={3} value={form.address || ""} onChange={(e) => setForm({ ...form, address: e.target.value })} /></div>
+              <div className="grid grid-cols-2 gap-2">
+                <div><Label>State Name</Label><Input value={form.stateName || ""} onChange={(e) => setForm({ ...form, stateName: e.target.value })} /></div>
+                <div><Label>State Code</Label><Input value={form.stateCode || ""} onChange={(e) => setForm({ ...form, stateCode: e.target.value })} /></div>
+              </div>
+              <div className="pt-2 border-t">
+                <p className="text-xs font-semibold text-muted-foreground mb-2">Bank details (printed on invoice)</p>
+                <div className="space-y-2">
+                  <div><Label>A/c Holder's Name</Label><Input value={form.bankAccountName || ""} onChange={(e) => setForm({ ...form, bankAccountName: e.target.value })} /></div>
+                  <div className="grid grid-cols-2 gap-2">
+                    <div><Label>Bank Name</Label><Input value={form.bankName || ""} onChange={(e) => setForm({ ...form, bankName: e.target.value })} /></div>
+                    <div><Label>A/c No.</Label><Input value={form.bankAccountNo || ""} onChange={(e) => setForm({ ...form, bankAccountNo: e.target.value })} /></div>
+                  </div>
+                  <div><Label>Branch &amp; IFS Code</Label><Input value={form.bankBranchIfsc || ""} onChange={(e) => setForm({ ...form, bankBranchIfsc: e.target.value })} /></div>
+                </div>
+              </div>
               <div className="flex gap-2">
                 <Button type="submit">Save</Button>
                 {form.companyId && <Button type="button" variant="outline" onClick={() => setForm(empty)}>Cancel</Button>}

@@ -28,9 +28,15 @@ function NewInvoicePage() {
   const [customerId, setCustomerId] = useState("");
   const [invoiceNumber, setInvoiceNumber] = useState(`INV-${Date.now().toString().slice(-6)}`);
   const [date, setDate] = useState(new Date().toISOString().slice(0, 10));
-  const [items, setItems] = useState<InvoiceItem[]>([{ description: "", amount: 0 }]);
+  const [items, setItems] = useState<InvoiceItem[]>([
+    { description: "", hsnSac: "998315", qty: 1, rate: 0, amount: 0 },
+  ]);
   const [gstType, setGstType] = useState<"CGST_SGST" | "IGST">("CGST_SGST");
   const [gstPercent, setGstPercent] = useState(18);
+  const [referenceNo, setReferenceNo] = useState("");
+  const [paymentTerms, setPaymentTerms] = useState("");
+  const [buyerOrderNo, setBuyerOrderNo] = useState("");
+  const [otherReferences, setOtherReferences] = useState("");
 
   useEffect(() => {
     endpoints.listCustomers().then(setCustomers).catch(() => setCustomers([]));
@@ -45,7 +51,19 @@ function NewInvoicePage() {
   const words = useMemo(() => numberToWordsIndian(breakdown.total), [breakdown.total]);
 
   const updateItem = (idx: number, patch: Partial<InvoiceItem>) => {
-    setItems((arr) => arr.map((it, i) => (i === idx ? { ...it, ...patch } : it)));
+    setItems((arr) =>
+      arr.map((it, i) => {
+        if (i !== idx) return it;
+        const next = { ...it, ...patch };
+        // Auto-calc amount when qty or rate provided
+        if (patch.qty != null || patch.rate != null) {
+          const q = Number(next.qty) || 0;
+          const r = Number(next.rate) || 0;
+          if (q && r) next.amount = +(q * r).toFixed(2);
+        }
+        return next;
+      }),
+    );
   };
 
   const save = async () => {
@@ -61,6 +79,10 @@ function NewInvoicePage() {
       customerId,
       customerName: customer?.name,
       companyId,
+      referenceNo,
+      paymentTerms,
+      buyerOrderNo,
+      otherReferences,
       items,
       gstType,
       gstPercent,
@@ -101,13 +123,19 @@ function NewInvoicePage() {
                   </SelectContent>
                 </Select>
               </div>
+              <div className="sm:col-span-2 grid sm:grid-cols-2 gap-4">
+                <div><Label>Reference No. &amp; Date</Label><Input value={referenceNo} onChange={(e) => setReferenceNo(e.target.value)} /></div>
+                <div><Label>Mode/Terms of Payment</Label><Input value={paymentTerms} onChange={(e) => setPaymentTerms(e.target.value)} /></div>
+                <div><Label>Buyer's Order No.</Label><Input value={buyerOrderNo} onChange={(e) => setBuyerOrderNo(e.target.value)} /></div>
+                <div><Label>Other References</Label><Input value={otherReferences} onChange={(e) => setOtherReferences(e.target.value)} /></div>
+              </div>
             </CardContent>
           </Card>
 
           <Card>
             <CardHeader className="flex flex-row items-center justify-between">
               <CardTitle>Items</CardTitle>
-              <Button size="sm" variant="outline" onClick={() => setItems([...items, { description: "", amount: 0 }])}>
+              <Button size="sm" variant="outline" onClick={() => setItems([...items, { description: "", hsnSac: items[0]?.hsnSac || "998315", qty: 1, rate: 0, amount: 0 }])}>
                 <Plus className="h-4 w-4 mr-1" /> Add row
               </Button>
             </CardHeader>
@@ -115,13 +143,33 @@ function NewInvoicePage() {
               {items.map((it, idx) => (
                 <div key={idx} className="grid grid-cols-12 gap-2 items-center">
                   <Input
-                    className="col-span-8"
+                    className="col-span-4"
                     placeholder="Description of service"
                     value={it.description}
                     onChange={(e) => updateItem(idx, { description: e.target.value })}
                   />
                   <Input
-                    className="col-span-3"
+                    className="col-span-2"
+                    placeholder="HSN/SAC"
+                    value={it.hsnSac || ""}
+                    onChange={(e) => updateItem(idx, { hsnSac: e.target.value })}
+                  />
+                  <Input
+                    className="col-span-1"
+                    type="number"
+                    placeholder="Qty"
+                    value={it.qty || ""}
+                    onChange={(e) => updateItem(idx, { qty: Number(e.target.value) })}
+                  />
+                  <Input
+                    className="col-span-2"
+                    type="number"
+                    placeholder="Rate"
+                    value={it.rate || ""}
+                    onChange={(e) => updateItem(idx, { rate: Number(e.target.value) })}
+                  />
+                  <Input
+                    className="col-span-2"
                     type="number"
                     placeholder="Amount"
                     value={it.amount || ""}

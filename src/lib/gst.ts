@@ -1,10 +1,13 @@
 export function calcGst(subtotal: number, gstPercent: number, gstType: "CGST_SGST" | "IGST") {
   const tax = +(subtotal * (gstPercent / 100)).toFixed(2);
+  const rawTotal = +(subtotal + tax).toFixed(2);
+  const rounded = Math.round(rawTotal);
+  const roundOff = +(rounded - rawTotal).toFixed(2);
   if (gstType === "IGST") {
-    return { cgst: 0, sgst: 0, igst: tax, total: +(subtotal + tax).toFixed(2) };
+    return { cgst: 0, sgst: 0, igst: tax, roundOff, total: rounded };
   }
   const half = +(tax / 2).toFixed(2);
-  return { cgst: half, sgst: half, igst: 0, total: +(subtotal + tax).toFixed(2) };
+  return { cgst: half, sgst: half, igst: 0, roundOff, total: rounded };
 }
 
 const ones = [
@@ -30,7 +33,7 @@ export function numberToWordsIndian(num: number): string {
   if (!isFinite(num)) return "";
   const rupees = Math.floor(num);
   const paise = Math.round((num - rupees) * 100);
-  if (rupees === 0 && paise === 0) return "Zero Rupees Only";
+  if (rupees === 0 && paise === 0) return "INR Zero Rupee Only.";
 
   const parts: string[] = [];
   let n = rupees;
@@ -44,7 +47,7 @@ export function numberToWordsIndian(num: number): string {
   if (thousand) parts.push(twoDigits(thousand) + " Thousand");
   if (hundred) parts.push(threeDigits(hundred));
 
-  let result = parts.join(" ").trim() + " Rupees";
-  if (paise > 0) result += " and " + twoDigits(paise) + " Paise";
-  return result + " Only";
+  let result = "INR " + parts.join(" ").trim() + " Rupee";
+  if (paise > 0) result += " And " + twoDigits(paise) + " Paisa";
+  return result + " Only.";
 }

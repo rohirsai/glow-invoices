@@ -89,6 +89,9 @@ function InvoiceDetail() {
               <tr className="bg-muted">
                 <th className="text-left p-2 border">#</th>
                 <th className="text-left p-2 border">Description</th>
+                <th className="text-center p-2 border">HSN/SAC</th>
+                <th className="text-center p-2 border">Qty</th>
+                <th className="text-right p-2 border">Rate (₹)</th>
                 <th className="text-right p-2 border">Amount (₹)</th>
               </tr>
             </thead>
@@ -97,6 +100,9 @@ function InvoiceDetail() {
                 <tr key={i}>
                   <td className="p-2 border">{i + 1}</td>
                   <td className="p-2 border">{it.description}</td>
+                  <td className="p-2 border text-center">{it.hsnSac || "—"}</td>
+                  <td className="p-2 border text-center">{it.qty ?? "—"}</td>
+                  <td className="p-2 border text-right">{it.rate != null ? Number(it.rate).toLocaleString("en-IN") : "—"}</td>
                   <td className="p-2 border text-right">{Number(it.amount).toLocaleString("en-IN")}</td>
                 </tr>
               ))}
