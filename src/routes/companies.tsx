@@ -18,7 +18,18 @@ export const Route = createFileRoute("/companies")({
   ),
 });
 
-const empty: Partial<Company> = { name: "", address: "", gstin: "", email: "" };
+const empty: Partial<Company> = {
+  name: "",
+  address: "",
+  gstin: "",
+  email: "",
+  stateName: "",
+  stateCode: "",
+  bankAccountName: "",
+  bankName: "",
+  bankAccountNo: "",
+  bankBranchIfsc: "",
+};
 
 function CompaniesPage() {
   const [list, setList] = useState<Company[]>([]);
