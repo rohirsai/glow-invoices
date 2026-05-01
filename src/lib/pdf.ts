@@ -1,5 +1,6 @@
 import jsPDF from "jspdf";
 import type { Invoice, Company, Customer } from "./api";
+import { numberToWordsIndian } from "./gst";
 
 // Indian-style Tally tax invoice layout matching the reference format.
 export function generateInvoicePdf(args: {
