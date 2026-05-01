@@ -129,7 +129,19 @@ function NewInvoicePage() {
           <Card>
             <CardHeader className="flex flex-row items-center justify-between">
               <CardTitle>Items</CardTitle>
-              <Button size="sm" variant="outline" onClick={() => setItems([...items, { description: "", amount: 0 }])}>
+              <div className="sm:col-span-2 grid sm:grid-cols-2 gap-4">
+                <div><Label>Reference No. &amp; Date</Label><Input value={referenceNo} onChange={(e) => setReferenceNo(e.target.value)} /></div>
+                <div><Label>Mode/Terms of Payment</Label><Input value={paymentTerms} onChange={(e) => setPaymentTerms(e.target.value)} /></div>
+                <div><Label>Buyer's Order No.</Label><Input value={buyerOrderNo} onChange={(e) => setBuyerOrderNo(e.target.value)} /></div>
+                <div><Label>Other References</Label><Input value={otherReferences} onChange={(e) => setOtherReferences(e.target.value)} /></div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between">
+              <CardTitle>Items</CardTitle>
+              <Button size="sm" variant="outline" onClick={() => setItems([...items, { description: "", hsnSac: items[0]?.hsnSac || "998315", qty: 1, rate: 0, amount: 0 }])}>
                 <Plus className="h-4 w-4 mr-1" /> Add row
               </Button>
             </CardHeader>
