@@ -417,15 +417,3 @@ function formatDate(iso: string) {
   return `${m[3]}-${mm}-${yy}`;
 }
 
-// Local copy to avoid circular import
-function numberToWordsForTax(n: number): string {
-  // dynamic import-free: re-implement minimal call into the existing helper
-  // by deferring through globalThis if available, otherwise inline format.
-  try {
-    // eslint-disable-next-line @typescript-eslint/no-require-imports
-    const mod = require("./gst");
-    return mod.numberToWordsIndian(n);
-  } catch {
-    return "";
-  }
-}
