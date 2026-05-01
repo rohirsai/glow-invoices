@@ -53,23 +53,32 @@ export async function generateInvoicePdf(args: {
   let y = M;
   const startY = y;
 
-  // ---------- Header band: Logo/Company name | TAX INVOICE ----------
-  const headerH = 60;
+  // ---------- Header band: Logo | TAX INVOICE ----------
+  const headerH = 80;
   const headerSplit = M + innerW * 0.55;
   doc.rect(M, y, innerW, headerH);
   doc.line(headerSplit, y, headerSplit, y + headerH);
 
-  doc.setFont("helvetica", "bold");
-  doc.setFontSize(16);
-  doc.text(company?.name || "—", M + 10, y + 24);
-  doc.setFont("helvetica", "normal");
-  doc.setFontSize(9);
-  const compAddr = doc.splitTextToSize(company?.address || "", headerSplit - M - 20);
-  doc.text(compAddr, M + 10, y + 38);
+  // Logo (preserve aspect ratio, fit in left header cell)
+  if (logo && logo.w && logo.h) {
+    const maxW = headerSplit - M - 20;
+    const maxH = headerH - 16;
+    const scale = Math.min(maxW / logo.w, maxH / logo.h);
+    const w = logo.w * scale;
+    const h = logo.h * scale;
+    const lx = M + (headerSplit - M - w) / 2;
+    const ly = y + (headerH - h) / 2;
+    doc.addImage(logo.dataUrl, "PNG", lx, ly, w, h, undefined, "FAST");
+  } else {
+    // Fallback: company name as text
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(18);
+    doc.text(company?.name || "APOYPHE", M + 14, y + headerH / 2 + 6);
+  }
 
   doc.setFont("helvetica", "bold");
-  doc.setFontSize(18);
-  doc.text("TAX INVOICE", headerSplit + (pageW - headerSplit - M) / 2, y + 36, {
+  doc.setFontSize(20);
+  doc.text("TAX INVOICE", headerSplit + (pageW - headerSplit - M) / 2, y + headerH / 2 + 6, {
     align: "center",
   });
   y += headerH;
