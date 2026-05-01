@@ -123,12 +123,6 @@ function NewInvoicePage() {
                   </SelectContent>
                 </Select>
               </div>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between">
-              <CardTitle>Items</CardTitle>
               <div className="sm:col-span-2 grid sm:grid-cols-2 gap-4">
                 <div><Label>Reference No. &amp; Date</Label><Input value={referenceNo} onChange={(e) => setReferenceNo(e.target.value)} /></div>
                 <div><Label>Mode/Terms of Payment</Label><Input value={paymentTerms} onChange={(e) => setPaymentTerms(e.target.value)} /></div>
