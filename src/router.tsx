@@ -63,6 +63,7 @@ export const getRouter = () => {
     defaultPreloadDelay: 50,
     defaultPreloadStaleTime: 30_000,
     defaultErrorComponent: DefaultErrorComponent,
+    ...({ defaultSsr: false } as Record<string, unknown>),
   });
 
   return router;
