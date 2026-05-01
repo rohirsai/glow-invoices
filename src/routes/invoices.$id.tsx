@@ -113,27 +113,34 @@ function InvoicePreview() {
         import("html2canvas"),
       ]);
 
+      // Render at the on-screen width so the PDF layout matches the preview.
+      const renderWidth = el.offsetWidth;
+
       const canvas = await html2canvas(el, {
         scale: 2,
         useCORS: true,
         backgroundColor: "#ffffff",
-        onclone: (_doc, clonedEl) => {
-          const root = clonedEl as HTMLElement;
-          root.style.backgroundColor = "#ffffff";
-          root.style.color = "#111827";
-          root.style.borderColor = "#1f2937";
-          root.style.boxShadow = "none";
-          root.querySelectorAll<HTMLElement>("*").forEach((node) => {
-            const classes = node.className.toString();
-            node.style.color = classes.includes("text-muted") ? "#52525b" : "#111827";
-            node.style.borderColor = "#1f2937";
-            node.style.boxShadow = "none";
-            if (classes.includes("bg-muted")) {
-              node.style.backgroundColor = "#f4f4f5";
-            } else if (node.tagName !== "IMG") {
-              node.style.backgroundColor = "#ffffff";
+        width: renderWidth,
+        windowWidth: renderWidth,
+        onclone: (doc, clonedEl) => {
+          // Inject a print stylesheet scoped to the cloned invoice only.
+          // This guarantees readable colors in the PDF without overriding
+          // the layout (alignment, borders, table structure) of every node.
+          const style = doc.createElement("style");
+          style.textContent = `
+            #pdf-capture, #pdf-capture * {
+              color: #111827 !important;
+              border-color: #1f2937 !important;
+              box-shadow: none !important;
+              -webkit-print-color-adjust: exact;
+              print-color-adjust: exact;
             }
-          });
+            #pdf-capture { background: #ffffff !important; }
+            #pdf-capture .text-muted-foreground { color: #52525b !important; }
+            #pdf-capture .bg-muted\\/30 { background: #f4f4f5 !important; }
+          `;
+          doc.head.appendChild(style);
+          clonedEl.id = "pdf-capture";
         },
       });
 
