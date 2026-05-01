@@ -19,9 +19,24 @@ export const Route = createFileRoute("/dashboard")({
 
 function Dashboard() {
   const [invoices, setInvoices] = useState<Invoice[]>([]);
+  const [loadingSample, setLoadingSample] = useState(false);
+  const refresh = () => endpoints.listInvoices().then(setInvoices).catch(() => setInvoices([]));
   useEffect(() => {
-    endpoints.listInvoices().then(setInvoices).catch(() => setInvoices([]));
+    refresh();
   }, []);
+
+  const seedSample = async () => {
+    setLoadingSample(true);
+    try {
+      await loadSampleData();
+      toast.success("Sample invoice loaded (APOY/56/25-26)");
+      await refresh();
+    } catch {
+      toast.error("Failed to load sample data");
+    } finally {
+      setLoadingSample(false);
+    }
+  };
 
   const total = invoices.length;
   const paid = invoices.filter((i) => i.status === "PAID").length;
