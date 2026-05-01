@@ -143,13 +143,33 @@ function NewInvoicePage() {
               {items.map((it, idx) => (
                 <div key={idx} className="grid grid-cols-12 gap-2 items-center">
                   <Input
-                    className="col-span-8"
+                    className="col-span-4"
                     placeholder="Description of service"
                     value={it.description}
                     onChange={(e) => updateItem(idx, { description: e.target.value })}
                   />
                   <Input
-                    className="col-span-3"
+                    className="col-span-2"
+                    placeholder="HSN/SAC"
+                    value={it.hsnSac || ""}
+                    onChange={(e) => updateItem(idx, { hsnSac: e.target.value })}
+                  />
+                  <Input
+                    className="col-span-1"
+                    type="number"
+                    placeholder="Qty"
+                    value={it.qty || ""}
+                    onChange={(e) => updateItem(idx, { qty: Number(e.target.value) })}
+                  />
+                  <Input
+                    className="col-span-2"
+                    type="number"
+                    placeholder="Rate"
+                    value={it.rate || ""}
+                    onChange={(e) => updateItem(idx, { rate: Number(e.target.value) })}
+                  />
+                  <Input
+                    className="col-span-2"
                     type="number"
                     placeholder="Amount"
                     value={it.amount || ""}
