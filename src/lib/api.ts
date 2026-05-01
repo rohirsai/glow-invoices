@@ -162,13 +162,7 @@ async function mockApi<T>(path: string, init: RequestInit): Promise<T> {
   if (path === "/company" && method === "GET") return ls<Company[]>("mock_companies", []) as T;
   if (path === "/company" && method === "POST") {
     const list = ls<Company[]>("mock_companies", []);
-    const item: Company = {
-      companyId: body.companyId || uid(),
-      name: body.name,
-      address: body.address,
-      gstin: body.gstin,
-      email: body.email,
-    };
+    const item: Company = { ...body, companyId: body.companyId || uid() };
     const idx = list.findIndex((x) => x.companyId === item.companyId);
     if (idx >= 0) list[idx] = item;
     else list.push(item);
@@ -178,12 +172,7 @@ async function mockApi<T>(path: string, init: RequestInit): Promise<T> {
   if (path === "/customer" && method === "GET") return ls<Customer[]>("mock_customers", []) as T;
   if (path === "/customer" && method === "POST") {
     const list = ls<Customer[]>("mock_customers", []);
-    const item: Customer = {
-      customerId: body.customerId || uid(),
-      name: body.name,
-      address: body.address,
-      gstin: body.gstin,
-    };
+    const item: Customer = { ...body, customerId: body.customerId || uid() };
     const idx = list.findIndex((x) => x.customerId === item.customerId);
     if (idx >= 0) list[idx] = item;
     else list.push(item);
