@@ -115,6 +115,15 @@ export type Invoice = {
   status: "PAID" | "PENDING";
 };
 
+export type TeamUser = {
+  userId: string;
+  name: string;
+  email: string;
+  role: "Admin" | "Manager" | "Staff";
+  phone?: string;
+  active?: boolean;
+};
+
 export const endpoints = {
   login: (email: string, password: string) =>
     api.post<{ token: string; user: { email: string; name?: string } }>("/login", {
@@ -129,6 +138,9 @@ export const endpoints = {
   saveInvoice: (inv: Partial<Invoice>) => api.post<Invoice>("/invoice", inv),
   setInvoiceStatus: (invoiceId: string, status: "PAID" | "PENDING") =>
     api.put<Invoice>("/invoice/status", { invoiceId, status }),
+  listUsers: () => api.get<TeamUser[]>("/users"),
+  saveUser: (u: Partial<TeamUser>) => api.post<TeamUser>("/users", u),
+  deleteUser: (userId: string) => api.del<{ ok: true }>(`/users/${userId}`),
 };
 
 // ---------- Local mock (used when VITE_API_BASE_URL is empty) ----------
