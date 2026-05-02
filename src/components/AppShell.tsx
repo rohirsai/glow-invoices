@@ -1,7 +1,7 @@
 import { Link, useNavigate, useLocation } from "@tanstack/react-router";
 import type { ReactNode } from "react";
 import { useAuth } from "@/lib/auth";
-import { LayoutDashboard, Building2, Users, FileText, FilePlus, LogOut } from "lucide-react";
+import { LayoutDashboard, Building2, Users, FileText, FilePlus, LogOut, UserCog } from "lucide-react";
 import { cn } from "@/lib/utils";
 import sigmaMark from "@/assets/apoyphe-sigma.png";
 
@@ -11,6 +11,7 @@ const nav = [
   { to: "/customers", label: "Customers", icon: Users },
   { to: "/invoices", label: "Invoices", icon: FileText },
   { to: "/invoices/new", label: "New Invoice", icon: FilePlus },
+  { to: "/users", label: "Users", icon: UserCog },
 ] as const;
 
 export function AppShell({ children }: { children: ReactNode }) {
