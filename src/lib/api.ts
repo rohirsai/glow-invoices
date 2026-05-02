@@ -115,6 +115,15 @@ export type Invoice = {
   status: "PAID" | "PENDING";
 };
 
+export type TeamUser = {
+  userId: string;
+  name: string;
+  email: string;
+  role: "Admin" | "Manager" | "Staff";
+  phone?: string;
+  active?: boolean;
+};
+
 export const endpoints = {
   login: (email: string, password: string) =>
     api.post<{ token: string; user: { email: string; name?: string } }>("/login", {
@@ -129,6 +138,9 @@ export const endpoints = {
   saveInvoice: (inv: Partial<Invoice>) => api.post<Invoice>("/invoice", inv),
   setInvoiceStatus: (invoiceId: string, status: "PAID" | "PENDING") =>
     api.put<Invoice>("/invoice/status", { invoiceId, status }),
+  listUsers: () => api.get<TeamUser[]>("/users"),
+  saveUser: (u: Partial<TeamUser>) => api.post<TeamUser>("/users", u),
+  deleteUser: (userId: string) => api.del<{ ok: true }>(`/users/${userId}`),
 };
 
 // ---------- Local mock (used when VITE_API_BASE_URL is empty) ----------
@@ -196,6 +208,22 @@ async function mockApi<T>(path: string, init: RequestInit): Promise<T> {
     list[idx].status = body.status;
     lsSet("mock_invoices", list);
     return list[idx] as T;
+  }
+  if (path === "/users" && method === "GET") return ls<TeamUser[]>("mock_users", []) as T;
+  if (path === "/users" && method === "POST") {
+    const list = ls<TeamUser[]>("mock_users", []);
+    const item: TeamUser = { active: true, ...body, userId: body.userId || uid() };
+    const idx = list.findIndex((x) => x.userId === item.userId);
+    if (idx >= 0) list[idx] = item;
+    else list.push(item);
+    lsSet("mock_users", list);
+    return item as T;
+  }
+  if (path.startsWith("/users/") && method === "DELETE") {
+    const id = path.split("/")[2];
+    const list = ls<TeamUser[]>("mock_users", []).filter((x) => x.userId !== id);
+    lsSet("mock_users", list);
+    return { ok: true } as T;
   }
   throw new ApiError(404, `Mock route not found: ${method} ${path}`);
 }
