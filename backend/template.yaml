@@ -1,0 +1,100 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Transform: AWS::Serverless-2016-10-31
+Description: Invoice app backend (Lambda + API Gateway HTTP API + DynamoDB)
+
+Parameters:
+  AuthSecret:
+    Type: String
+    NoEcho: true
+    Default: please-change-this-to-a-long-random-string
+    Description: HMAC secret used to sign auth tokens
+
+Globals:
+  Function:
+    Runtime: nodejs20.x
+    Timeout: 10
+    MemorySize: 256
+    Architectures: [arm64]
+
+Resources:
+  CompaniesTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: Companies
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+        - AttributeName: companyId
+          AttributeType: S
+      KeySchema:
+        - AttributeName: companyId
+          KeyType: HASH
+
+  CustomersTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: Customers
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+        - AttributeName: customerId
+          AttributeType: S
+      KeySchema:
+        - AttributeName: customerId
+          KeyType: HASH
+
+  InvoicesTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: Invoices
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+        - AttributeName: invoiceId
+          AttributeType: S
+      KeySchema:
+        - AttributeName: invoiceId
+          KeyType: HASH
+
+  UsersTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: Users
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+        - AttributeName: userId
+          AttributeType: S
+      KeySchema:
+        - AttributeName: userId
+          KeyType: HASH
+
+  ApiFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: .
+      Handler: index.handler
+      Environment:
+        Variables:
+          AUTH_SECRET: !Ref AuthSecret
+          COMPANIES_TABLE: !Ref CompaniesTable
+          CUSTOMERS_TABLE: !Ref CustomersTable
+          INVOICES_TABLE: !Ref InvoicesTable
+          USERS_TABLE: !Ref UsersTable
+      Policies:
+        - DynamoDBCrudPolicy: { TableName: !Ref CompaniesTable }
+        - DynamoDBCrudPolicy: { TableName: !Ref CustomersTable }
+        - DynamoDBCrudPolicy: { TableName: !Ref InvoicesTable }
+        - DynamoDBCrudPolicy: { TableName: !Ref UsersTable }
+      Events:
+        ProxyAny:
+          Type: HttpApi
+          Properties:
+            Path: /{proxy+}
+            Method: ANY
+        Root:
+          Type: HttpApi
+          Properties:
+            Path: /
+            Method: ANY
+
+Outputs:
+  ApiUrl:
+    Description: Base URL — put this in the frontend's VITE_API_BASE_URL
+    Value: !Sub "https://${ServerlessHttpApi}.execute-api.${AWS::Region}.amazonaws.com"
