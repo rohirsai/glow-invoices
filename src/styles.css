@@ -62,9 +62,11 @@
 }
 
 :root {
-  --radius: 0.5rem;
+  --radius: 0.75rem;
   /* Simple HSL-based palette; safe for jsPDF rendering since we never render the PDF from DOM */
-  --background: hsl(210 20% 98%);
+  --background: hsl(220 30% 97%);
+  --gradient-app: linear-gradient(135deg, hsl(220 60% 97%) 0%, hsl(250 60% 97%) 50%, hsl(280 50% 97%) 100%);
+  --gradient-primary: linear-gradient(135deg, hsl(231 76% 56%) 0%, hsl(250 80% 60%) 100%);
   --foreground: hsl(222 47% 11%);
   --card: hsl(0 0% 100%);
   --card-foreground: hsl(222 47% 11%);
@@ -88,14 +90,14 @@
   --chart-3: oklch(0.398 0.07 227.392);
   --chart-4: oklch(0.828 0.189 84.429);
   --chart-5: oklch(0.769 0.188 70.08);
-  --sidebar: oklch(0.984 0.003 247.858);
-  --sidebar-foreground: oklch(0.129 0.042 264.695);
-  --sidebar-primary: oklch(0.208 0.042 265.755);
-  --sidebar-primary-foreground: oklch(0.984 0.003 247.858);
-  --sidebar-accent: oklch(0.968 0.007 247.896);
-  --sidebar-accent-foreground: oklch(0.208 0.042 265.755);
-  --sidebar-border: oklch(0.929 0.013 255.508);
-  --sidebar-ring: oklch(0.704 0.04 256.788);
+  --sidebar: hsl(222 47% 11%);
+  --sidebar-foreground: hsl(210 40% 96%);
+  --sidebar-primary: hsl(231 76% 56%);
+  --sidebar-primary-foreground: hsl(210 40% 98%);
+  --sidebar-accent: hsl(222 40% 18%);
+  --sidebar-accent-foreground: hsl(210 40% 96%);
+  --sidebar-border: hsl(222 40% 18%);
+  --sidebar-ring: hsl(231 76% 56%);
 }
 
 .dark {
@@ -139,7 +141,8 @@
   }
 
   body {
-    background-color: var(--color-background);
+    background: var(--gradient-app);
+    background-attachment: fixed;
     color: var(--color-foreground);
   }
 }
