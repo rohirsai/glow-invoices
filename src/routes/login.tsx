@@ -13,8 +13,8 @@ export const Route = createFileRoute("/login")({
 function LoginPage() {
   const { login, isAuthenticated } = useAuth();
   const navigate = useNavigate();
-  const [email, setEmail] = useState("admin@example.com");
-  const [password, setPassword] = useState("password");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
@@ -58,7 +58,7 @@ function LoginPage() {
               {loading ? "Signing in..." : "Sign in"}
             </Button>
             <p className="text-xs text-muted-foreground text-center">
-              No backend configured? Any email/password works locally (mock mode).
+              Admin access only.
             </p>
           </form>
         </CardContent>
