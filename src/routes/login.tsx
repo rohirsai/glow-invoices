@@ -58,7 +58,7 @@ function LoginPage() {
               {loading ? "Signing in..." : "Sign in"}
             </Button>
             <p className="text-xs text-muted-foreground text-center">
-              No backend configured? Any email/password works locally (mock mode).
+              Admin access only.
             </p>
           </form>
         </CardContent>
