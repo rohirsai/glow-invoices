@@ -25,16 +25,17 @@ export function AppShell({ children }: { children: ReactNode }) {
   };
 
   return (
-    <div className="min-h-screen flex bg-background text-foreground">
-      <aside className="w-64 shrink-0 border-r bg-card flex flex-col">
-        <div className="px-5 py-5 border-b flex items-center gap-3">
+    <div className="min-h-screen flex text-foreground">
+      <aside className="w-64 shrink-0 bg-sidebar text-sidebar-foreground flex flex-col">
+        <div className="px-5 py-5 border-b border-sidebar-border flex items-center gap-3">
           <img src={sigmaMark} alt="Apoyphe" className="h-9 w-9 shrink-0" />
           <div>
-            <div className="text-lg font-semibold leading-tight">Apoyphe Billing</div>
-            <div className="text-xs text-muted-foreground">Invoice Manager</div>
+            <div className="text-base font-semibold leading-tight">Apoyphe</div>
+            <div className="text-xs opacity-60">Invoice Suite</div>
           </div>
         </div>
-        <nav className="flex-1 px-3 py-4 space-y-1">
+        <div className="px-5 pt-5 pb-2 text-[11px] uppercase tracking-wider opacity-50">Workspace</div>
+        <nav className="flex-1 px-3 space-y-1">
           {nav.map((item) => {
             const Icon = item.icon;
             const active = location.pathname === item.to ||
@@ -46,8 +47,8 @@ export function AppShell({ children }: { children: ReactNode }) {
                 className={cn(
                   "flex items-center gap-3 px-3 py-2 rounded-md text-sm transition-colors",
                   active
-                    ? "bg-primary text-primary-foreground"
-                    : "text-foreground hover:bg-accent",
+                    ? "bg-sidebar-primary text-sidebar-primary-foreground shadow-sm"
+                    : "hover:bg-sidebar-accent hover:text-sidebar-accent-foreground",
                 )}
               >
                 <Icon className="h-4 w-4" />
@@ -56,13 +57,13 @@ export function AppShell({ children }: { children: ReactNode }) {
             );
           })}
         </nav>
-        <div className="p-3 border-t">
-          <div className="px-2 py-2 text-xs text-muted-foreground truncate">
+        <div className="p-3 border-t border-sidebar-border">
+          <div className="px-2 py-2 text-xs opacity-60 truncate">
             {user?.email}
           </div>
           <button
             onClick={handleLogout}
-            className="w-full flex items-center gap-2 px-3 py-2 rounded-md text-sm hover:bg-accent"
+            className="w-full flex items-center gap-2 px-3 py-2 rounded-md text-sm hover:bg-sidebar-accent"
           >
             <LogOut className="h-4 w-4" /> Logout
           </button>
