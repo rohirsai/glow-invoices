@@ -166,9 +166,17 @@ async function mockApi<T>(path: string, init: RequestInit): Promise<T> {
 
   if (path === "/login" && method === "POST") {
     if (!body?.email || !body?.password) throw new ApiError(400, "Missing credentials");
+    const ADMIN_EMAIL = "admin_Ayyappa@Apoyphe.com";
+    const ADMIN_PASSWORD = "Apoyphe@varaprasad";
+    if (
+      body.email.trim().toLowerCase() !== ADMIN_EMAIL.toLowerCase() ||
+      body.password !== ADMIN_PASSWORD
+    ) {
+      throw new ApiError(401, "Invalid email or password");
+    }
     return {
       token: "mock-token-" + uid(),
-      user: { email: body.email, name: body.email.split("@")[0] },
+      user: { email: ADMIN_EMAIL, name: "Ayyappa", role: "Admin" },
     } as T;
   }
   if (path === "/company" && method === "GET") return ls<Company[]>("mock_companies", []) as T;
