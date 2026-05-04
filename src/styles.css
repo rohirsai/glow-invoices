@@ -141,7 +141,8 @@
   }
 
   body {
-    background-color: var(--color-background);
+    background: var(--gradient-app);
+    background-attachment: fixed;
     color: var(--color-foreground);
   }
 }
