@@ -113,6 +113,8 @@ export type Invoice = {
   roundOff?: number;
   total: number;
   status: "PAID" | "PENDING";
+  dueDate?: string;
+  placeOfSupply?: string;
 };
 
 export type TeamUser = {
