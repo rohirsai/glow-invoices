@@ -42,6 +42,9 @@ function Dashboard() {
   const paid = invoices.filter((i) => i.status === "PAID").length;
   const pending = total - paid;
   const totalAmount = invoices.reduce((s, i) => s + (i.total || 0), 0);
+  const outstandingAmount = invoices
+    .filter((i) => i.status === "PENDING")
+    .reduce((s, i) => s + (i.total || 0), 0);
 
   const cards = [
     { label: "Total Invoices", value: total, icon: FileText },
@@ -125,6 +128,61 @@ function Dashboard() {
           )}
         </CardContent>
       </Card>
+
+      {invoices.filter((i) => i.status === "PENDING").length > 0 && (
+        <Card className="mt-6 border-amber-200 bg-amber-50/50 dark:bg-amber-950/20 dark:border-amber-900">
+          <CardHeader>
+            <div className="flex items-center justify-between">
+              <CardTitle className="text-amber-900 dark:text-amber-100">Outstanding Bills</CardTitle>
+              <div className="text-right">
+                <p className="text-2xl font-bold text-amber-900 dark:text-amber-100">
+                  ₹{outstandingAmount.toLocaleString("en-IN", { maximumFractionDigits: 2 })}
+                </p>
+                <p className="text-xs text-amber-700 dark:text-amber-300">{invoices.filter((i) => i.status === "PENDING").length} pending</p>
+              </div>
+            </div>
+          </CardHeader>
+          <CardContent>
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="text-left border-b">
+                    <th className="py-2">Invoice #</th>
+                    <th className="py-2">Customer</th>
+                    <th className="py-2">Amount</th>
+                    <th className="py-2">Invoice Date</th>
+                    <th className="py-2">Due Date</th>
+                    <th className="text-right">Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {invoices
+                    .filter((i) => i.status === "PENDING")
+                    .sort((a, b) => new Date(b.date || "").getTime() - new Date(a.date || "").getTime())
+                    .map((i) => (
+                      <tr key={i.invoiceId} className="border-b last:border-0">
+                        <td className="py-2">
+                          <Link to="/invoices/$id" params={{ id: i.invoiceId }} className="text-primary hover:underline font-mono text-xs">
+                            {i.invoiceNumber}
+                          </Link>
+                        </td>
+                        <td className="py-2">{i.customerName || i.customerId}</td>
+                        <td className="py-2 font-semibold">₹{i.total.toLocaleString("en-IN")}</td>
+                        <td className="py-2">{i.date}</td>
+                        <td className="py-2">{i.dueDate || "—"}</td>
+                        <td className="py-2 text-right">
+                          <Link to="/invoices/$id" params={{ id: i.invoiceId }}>
+                            <Button size="sm" variant="outline" className="text-xs">View</Button>
+                          </Link>
+                        </td>
+                      </tr>
+                    ))}
+                </tbody>
+              </table>
+            </div>
+          </CardContent>
+        </Card>
+      )}
     </>
   );
 }
